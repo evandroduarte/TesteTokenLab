@@ -1,0 +1,34 @@
+{
+  "name": "api-tklab",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon src/index.js",
+    "start": "nodemon src/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/evandroduarte/TesteTokenLab.git"
+  },
+  "keywords": [],
+  "author": "Evandro Duarte de Castro Filho",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/evandroduarte/TesteTokenLab.git/issues"
+  },
+  "homepage": "https://github.com/evandroduarte/TesteTokenLab.git#readme",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "^8.6.0",
+    "express": "^4.17.1",
+    "jsonwebtoken": "^8.5.1",
+    "knex": "^0.21.1",
+    "mysql": "^2.18.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.4"
+  }
+}
