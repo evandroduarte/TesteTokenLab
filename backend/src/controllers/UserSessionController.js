@@ -16,15 +16,22 @@ module.exports = {
 
         const { user_email, user_password } = request.body;
         
-        const user = await connection('users')
-        .where('user_email', user_email)
-        .first()
+        let user = '';
 
-        if(!user){
-            return response.status(400).send({ message: 'Usuário não encontrado'});
+        try{
+            user = await connection('users')
+            .where('user_email', user_email)
+            .first()
+        }catch(err){
+            console.log(err);
         }
+
+        if(user === undefined){
+            return response.status(400).send('Usuário não encontrado')
+        }
+
         if(!await bcrypt.compare(user_password, user.user_password)){
-            return response.status(400).send({ message: 'Senha inválida' });
+            return response.send({ message: 'Senha inválida' });
         }
         response.send({
             user_id: user.user_id,

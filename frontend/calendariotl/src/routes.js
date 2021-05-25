@@ -4,6 +4,7 @@ import React from 'react';
 
 import Register from './pages/Register';
 import Login from './pages/Login';
+import Panel from './pages/Panel';
 
 export default function Routes(){
     return(
@@ -11,6 +12,7 @@ export default function Routes(){
         <Switch>
             <Route path="/" exact component={Login} />
             <Route path="/register" component={Register} />
+            <Route path="/panel" component={Panel} />
         </Switch>
         </BrowserRouter>
     )

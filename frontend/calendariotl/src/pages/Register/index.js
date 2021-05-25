@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useHistory } from 'react-router';
+import { useHistory } from "react-router";
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
 import Link from "@material-ui/core/Link";
@@ -37,7 +37,7 @@ export default function Register() {
   const [user_email, setEmail] = useState();
   const [user_password, setPassword] = useState();
   const history = useHistory();
-  document.title = "Registro"
+  document.title = "Registro";
 
   useEffect(() => {
     document.body.style.backgroundColor = "#81BDEA";
@@ -125,17 +125,21 @@ export default function Register() {
     </Container>
   );
 
-async function handleRegister(){
-  try{
-    const user_name = user_firstName + ' ' + user_surName;
-    await api.post("/users", {user_name, user_email, user_password});
-    alert('Usuário cadastrado com sucesso!');
-    history.push('/');
-  }catch(err){
-    alert('Erro ao cadastrar usuário!');
-    console.log(err);
+  async function handleRegister() {
+    try {
+      const user_name = user_firstName + " " + user_surName;
+      console.log('Aqui');
+      await api.post("/users", { user_name, user_email, user_password }).then((response) => {
+          if (response.data.message) {
+            alert(response.data.message);
+          } else {
+            alert("Usuário cadastrado com sucesso!");
+            history.push("/");
+          }
+        });
+    } catch (err) {
+      alert("Erro ao cadastrar usuário!");
+      console.log(err);
+    }
   }
-}
-
-
 }

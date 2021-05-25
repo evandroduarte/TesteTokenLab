@@ -94,18 +94,19 @@ export default function Login() {
   );
 
   async function handleLogin() {
-    try {
-      await api
-        .post("/session", { user_email, user_password })
-        .then((response) => {
-          if (response.data.user_id) {
-            console.log(response.data);
+      await api.post("/session", { user_email, user_password }).then((response) => {
+          if (response.data.message) {
+            alert(response.data.message);
           } else {
-            alert(response);
+            history.push({
+              pathname: "/panel",
+              state: {
+                user: response.data
+              }
+            })
           }
+        }, (error) => {
+          alert(error.response.data);
         });
-    } catch (err) {
-      alert('Falha no login!')
-    }
   }
 }

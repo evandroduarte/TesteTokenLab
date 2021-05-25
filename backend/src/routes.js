@@ -13,7 +13,11 @@ routes.post("/users", UserController.create);
 routes.post("/session", UserSessionController.create);
 
 //Rotas de eventos
-
+routes.post("/events", authMiddleware, EventController.create);
+routes.get("/events", authMiddleware, EventController.indexAll);
+routes.get("/events/:id", authMiddleware, EventController.indexSingle);
+routes.put("/events/:id", authMiddleware, EventController.update);
+routes.delete("/events/:id", authMiddleware, EventController.delete);
 
 
 module.exports = routes;
