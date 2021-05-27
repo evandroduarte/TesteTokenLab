@@ -7,11 +7,10 @@ import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
-
+import Alert from "@material-ui/lab/Alert";
 
 import logo from "../../assets/tklab_logo.png";
 import api from "../../services/api";
-
 
 import { useHistory } from "react-router";
 
@@ -33,6 +32,13 @@ const useStyles = makeStyles((theme) => ({
     paddingBottom: "15px",
     width: "300px",
   },
+  alert: {
+    width: "100%",
+    "& > * + *": {
+      marginTop: theme.spacing(2),
+    },
+    display: "none",
+  },
 }));
 
 export default function Login() {
@@ -53,6 +59,22 @@ export default function Login() {
         <Typography component="h1" variant="h5">
           Sistema de Calendário
         </Typography>
+        <div className={classes.alert} id="alert-user">
+          <Alert severity="error" variant="filled" onClose={() => {
+            let alerta = document.getElementById("alert-user");
+            alerta.style.display = "none";
+          }}>
+            Usuário não encontrado
+          </Alert>
+        </div>
+        <div className={classes.alert} id="alert-password">
+          <Alert severity="error" variant="filled" onClose={() => {
+            let alerta = document.getElementById("alert-password");
+            alerta.style.display = "none";
+          }}>
+            Senha Incorreta
+          </Alert>
+        </div>
         <form className={classes.form} noValidate>
           <TextField
             variant="outlined"
@@ -107,7 +129,10 @@ export default function Login() {
     await api.post("/session", { user_email, user_password }).then(
       (response) => {
         if (response.data.message) {
-          alert(response.data.message);
+          if(document.getElementById("alert-user").style.display === "block")
+          document.getElementById("alert-user").style.display = "none";
+          let alertaSenha = document.getElementById("alert-password");
+          alertaSenha.style.display = "block";
         } else {
           history.push({
             pathname: "/panel",
@@ -118,7 +143,12 @@ export default function Login() {
         }
       },
       (error) => {
-        alert(error.response.data);
+        //alert(error.response.data);
+        console.log(error.response.data);
+          if(document.getElementById("alert-password").style.display === "block")
+          document.getElementById("alert-password").style.display = "none";
+          let alerta = document.getElementById("alert-user");
+          alerta.style.display = "block";
       }
     );
   }

@@ -9,6 +9,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import logo from "../../assets/tklab_logo.png";
 import api from "../../services/api";
+import Alert from "@material-ui/lab/Alert";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -27,6 +28,13 @@ const useStyles = makeStyles((theme) => ({
   logo: {
     paddingBottom: "15px",
     width: "300px",
+  },
+  alert: {
+    width: "100%",
+    "& > * + *": {
+      marginTop: theme.spacing(2),
+    },
+    display: "none",
   },
 }));
 
@@ -50,6 +58,30 @@ export default function Register() {
         <Typography component="h1" variant="h5">
           Registro de usuário
         </Typography>
+        <div className={classes.alert} id="alert-data">
+          <Alert
+            severity="error"
+            variant="filled"
+            onClose={() => {
+              let alerta = document.getElementById("alert-data");
+              alerta.style.display = "none";
+            }}
+          >
+            Dados Incorretos!
+          </Alert>
+        </div>
+        <div className={classes.alert} id="alert-user">
+          <Alert
+            severity="error"
+            variant="filled"
+            onClose={() => {
+              let alerta = document.getElementById("alert-user");
+              alerta.style.display = "none";
+            }}
+          >
+            Usuário já cadastrado
+          </Alert>
+        </div>
         <form className={classes.form}>
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
@@ -126,20 +158,23 @@ export default function Register() {
   );
 
   async function handleRegister() {
-    try {
-      const user_name = user_firstName + " " + user_surName;
-      console.log('Aqui');
-      await api.post("/users", { user_name, user_email, user_password }).then((response) => {
-          if (response.data.message) {
-            alert(response.data.message);
-          } else {
-            alert("Usuário cadastrado com sucesso!");
-            history.push("/");
-          }
-        });
-    } catch (err) {
-      alert("Erro ao cadastrar usuário!");
-      console.log(err);
-    }
+    const user_name = user_firstName + " " + user_surName;
+    await api.post("/users", { user_name, user_email, user_password }).then(
+      (response) => {
+        // alert("Usuário cadastrado com sucesso!");
+        history.push("/");
+      },
+      (error) => {
+        if (error.response.data === "Usuário já cadastrado") {
+          if (document.getElementById("alert-data").style.display === "block")
+            document.getElementById("alert-data").style.display = "none";
+          document.getElementById("alert-user").style.display = "block";
+        } else if (error.response.data === "Dados Incorretos") {
+          if (document.getElementById("alert-user").style.display === "block")
+            document.getElementById("alert-user").style.display = "none";
+          document.getElementById("alert-data").style.display = "block";
+        }
+      }
+    );
   }
 }

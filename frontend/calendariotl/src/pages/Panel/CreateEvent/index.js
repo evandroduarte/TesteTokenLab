@@ -1,21 +1,31 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import "./styles.css";
 
 import api from "../../../services/api";
 
 import TextField from "@material-ui/core/TextField";
 import InputLabel from "@material-ui/core/InputLabel";
+import Alert from "@material-ui/lab/Alert";
+import { makeStyles } from "@material-ui/core/styles";
 
-import { useHistory } from "react-router";
-
+const useStyles = makeStyles((theme) => ({
+  alert: {
+    width: "100%",
+    "& > * + *": {
+      marginTop: theme.spacing(2),
+    },
+    display: "none",
+    marginBottom: "10px",
+  },
+}));
 
 export default function CreateEvent(props) {
+  const classes = useStyles();
   const [event_description, setDescription] = useState();
   const [event_dateStart, setDateStart] = useState();
   const [event_dateEnd, setDateEnd] = useState();
   const [event_startHour, setStartHour] = useState();
   const [event_endHour, setEndHour] = useState();
-  const history = useHistory();
 
   const config = {
     headers: {
@@ -24,12 +34,34 @@ export default function CreateEvent(props) {
     },
   };
 
-  useEffect(async () => {}, []);
-
   return (
     <div>
       <h1>Criar Evento</h1>
-
+      {/* Altertas */}
+      <div className={classes.alert} id="alert-data">
+        <Alert
+          severity="error"
+          variant="filled"
+          onClose={() => {
+            let alerta = document.getElementById("alert-data");
+            alerta.style.display = "none";
+          }}
+        >
+          Dados incorretos
+        </Alert>
+      </div>
+      <div className={classes.alert} id="alert-success">
+        <Alert
+          severity="success"
+          variant="filled"
+          onClose={() => {
+            let alerta = document.getElementById("alert-success");
+            alerta.style.display = "none";
+          }}
+        >
+          Evento criado com sucesso
+        </Alert>
+      </div>
       <div id="container">
         <TextField
           label="Descrição"
@@ -42,7 +74,7 @@ export default function CreateEvent(props) {
             <TextField
               id="date"
               type="date"
-              minDate= "0"
+              minDate="0"
               InputLabelProps={{
                 shrink: true,
               }}
@@ -101,31 +133,38 @@ export default function CreateEvent(props) {
   );
 
   async function createEvent() {
+    console.log(event_description);
 
     const event = {
-      event_description: event_description, 
-      event_startHour: event_startHour, 
-      event_endHour: event_endHour, 
-      event_dateStart: event_dateStart, 
-      event_dateEnd: event_dateEnd, 
-    }
+      event_description: event_description,
+      event_startHour: event_startHour,
+      event_endHour: event_endHour,
+      event_dateStart: event_dateStart,
+      event_dateEnd: event_dateEnd,
+    };
 
-    if(event_dateEnd < event_dateStart){
-      alert('Datas incorretas!');
-    }else if(parseInt(event_endHour) < parseInt(event_startHour)){
-      alert('Horarios incorretos!')
-    }else{
-      await api.post("/events", event, config).then(async (response) => {
-        await setDescription();
-        await setStartHour();
-        await setEndHour();
-        await setDateStart();
-        await setDateEnd();
+    if (event_dateEnd < event_dateStart) {
+      document.getElementById("alert-data").style.display = "block";
+    } else if (parseInt(event_endHour) < parseInt(event_startHour)) {
+      document.getElementById("alert-data").style.display = "block";
+    } else if (event_description !== undefined) {
+      await api.post("/events", event, config).then(
+        async (response) => {
+          await setDescription();
+          await setStartHour();
+          await setEndHour();
+          await setDateStart();
+          await setDateEnd();
 
-        alert('Evento criado com sucesso!');
-      }, (error) => {
-        alert(error.response.data)
-      })
+          if (document.getElementById("alert-data").style.display === "block")
+            document.getElementById("alert-data").style.display = "none";
+          document.getElementById("alert-success").style.display = "block";
+          // alert('Evento criado com sucesso!');
+        },
+        (error) => {
+          document.getElementById("alert-data").style.display = "block";
+        }
+      );
     }
   }
 }

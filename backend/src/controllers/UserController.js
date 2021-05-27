@@ -5,17 +5,27 @@ module.exports = {
   async create(request, response) {
     const { user_name, user_email } = request.body;
 
-    let userCheck = '';
+    let userCheck;
 
-    if (user_name != undefined && user_email != undefined && request.body.user_password != undefined) {
+    if (
+      user_name !== undefined &&
+      user_email !== undefined &&
+      user_email !== "" &&
+      request.body.user_password !== undefined &&
+      request.body.user_password !== ""
+    ) {
       const user_password = await bcrypt.hash(request.body.user_password, 10);
 
-      try{
+      try {
         userCheck = await connection("users")
-        .where("user_email", user_email)
-        .first();
-      }catch(err){
+          .where("user_email", user_email)
+          .first();
+      } catch (err) {
         console.log(err);
+      }
+
+      if (userCheck !== undefined) {
+        return response.status(500).send("Usuário já cadastrado");
       }
 
       const user = await connection("users").insert({
@@ -24,14 +34,8 @@ module.exports = {
         user_password,
       });
       return response.json(user);
-    }else if(user_name === undefined || user_email === undefined){
-      return response.send({
-        message: "Dados incorretos!"
-      })
+    } else {
+      return response.status(500).send("Dados Incorretos");
     }
-
-    return response.send({
-      message: "Usuário já cadastrado!",
-    });
   },
 };

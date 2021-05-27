@@ -10,6 +10,7 @@ import TablePagination from "@material-ui/core/TablePagination";
 import TableRow from "@material-ui/core/TableRow";
 import TextField from "@material-ui/core/TextField";
 import InputLabel from "@material-ui/core/InputLabel";
+import Alert from "@material-ui/lab/Alert";
 
 import "./styles.css";
 
@@ -28,7 +29,7 @@ const columns = [
 
 export default function StickyHeadTable(props) {
   const [Event, setEvent] = useState([]);
-  const [user, setUser] = useState(props.data);
+  const [user] = useState(props.data);
   const [event_description, setDescription] = useState();
   const [event_dateStart, setDateStart] = useState();
   const [event_dateEnd, setDateEnd] = useState();
@@ -94,14 +95,22 @@ export default function StickyHeadTable(props) {
     };
   }
 
-  const useStyles = makeStyles({
+  const useStyles = makeStyles((theme) => ({
     root: {
       width: "100%",
     },
     container: {
       maxHeight: 600,
     },
-  });
+    alert: {
+      width: "100%",
+      "& > * + *": {
+        marginTop: theme.spacing(2),
+      },
+      display: "none",
+      marginBottom: "10px",
+    }
+  }));
 
   const rows = [];
   if (Event.length)
@@ -123,7 +132,6 @@ export default function StickyHeadTable(props) {
   const classes = useStyles();
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
-  const [posicaoOS, setPosicaoOS] = useState(0);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -177,7 +185,7 @@ export default function StickyHeadTable(props) {
                           const value = row[column.id];
                           if (
                             column.id === "eventEdit" &&
-                            row.eventEdit != ""
+                            row.eventEdit !== ""
                           ) {
                             return (
                               <TableCell
@@ -192,7 +200,7 @@ export default function StickyHeadTable(props) {
                           }
                           if (
                             column.id === "eventDelete" &&
-                            row.eventDelete != ""
+                            row.eventDelete !== ""
                           ) {
                             return (
                               <TableCell
@@ -235,13 +243,24 @@ export default function StickyHeadTable(props) {
       <div>
         <div id="edit-event">
           <h1>Editar Evento</h1>
+          <div className={classes.alert} id="alert-data">
+            <Alert
+              severity="error"
+              variant="filled"
+              onClose={() => {
+                let alerta = document.getElementById("alert-data");
+                alerta.style.display = "none";
+              }}
+            >
+              Dados incorretos
+            </Alert>
+          </div>
           <div id="container">
             <TextField
               value={event_description}
               label="Descrição"
               onChange={(event) => setDescription(event.target.value)}
             />
-
             <div className="linha-2-itens">
               <div className="label-input">
                 <InputLabel style={{ marginTop: 16 }}>Data Inicio</InputLabel>
@@ -374,9 +393,11 @@ export default function StickyHeadTable(props) {
           } else {
             //Validação de datas e horários
             if (event_dateEnd < event_dateStart) {
-              alert("Datas incorretas!");
+              document.getElementById("alert-data").style.display = "block";
             } else if (parseInt(event_endHour) < parseInt(event_startHour)) {
-              alert("Horarios incorretos!");
+              document.getElementById("alert-data").style.display = "block";
+            }else if(event_description === undefined || event_description === ''){
+              document.getElementById("alert-data").style.display = "block";
             } else {
               let edit = document.querySelector("#edit-event");
               edit.style.display = "none";
@@ -396,7 +417,7 @@ export default function StickyHeadTable(props) {
           }
         },
         (error) => {
-          alert(error.response.data);
+          document.getElementById("alert-data").style.display = "block";
         }
       );
   }

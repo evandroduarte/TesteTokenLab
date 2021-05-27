@@ -41,22 +41,26 @@ module.exports = {
 
         const user_id = request.headers.user;
 
-
-        try{
-            const event = await connection("events").insert({
-                event_description,
-                event_startHour,
-                event_endHour,
-                event_dateStart,
-                event_dateEnd,
-                user_id
-            })
-
-            return response.send(event);
-        }catch(err){
-            console.log(err);
-            return response.status(400).send('Erro ao criar evento!')
+        if(event_description !== undefined && event_description !== ''){
+            try{
+                const event = await connection("events").insert({
+                    event_description,
+                    event_startHour,
+                    event_endHour,
+                    event_dateStart,
+                    event_dateEnd,
+                    user_id
+                })
+    
+                return response.send(event);
+            }catch(err){
+                console.log(err);
+                return response.status(400).send('Dados Incorretos!');
+            }
+        }else{
+            return response.status(400).send('Dados Incorretos');
         }
+
     },
 
     async update(request, response){
