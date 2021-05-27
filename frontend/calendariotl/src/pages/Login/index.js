@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
 import Link from "@material-ui/core/Link";
@@ -6,8 +7,12 @@ import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
+
+
 import logo from "../../assets/tklab_logo.png";
 import api from "../../services/api";
+
+
 import { useHistory } from "react-router";
 
 const useStyles = makeStyles((theme) => ({
@@ -32,9 +37,10 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Login() {
   const classes = useStyles();
-  const [user_email, setEmail] = useState('');
-  const [user_password, setPassword] = useState('');
+  const [user_email, setEmail] = useState("");
+  const [user_password, setPassword] = useState("");
   const history = useHistory();
+  document.title = "Sistema de Calendário";
 
   useEffect(() => {
     document.body.style.backgroundColor = "#81BDEA";
@@ -45,7 +51,7 @@ export default function Login() {
       <div className={classes.paper}>
         <img src={logo} className={classes.logo} alt="logo" />
         <Typography component="h1" variant="h5">
-          Sistema de Calendario
+          Sistema de Calendário
         </Typography>
         <form className={classes.form} noValidate>
           <TextField
@@ -58,7 +64,9 @@ export default function Login() {
             name="email"
             autoComplete="email"
             autoFocus
-            onChange={(event) => {setEmail(event.target.value)}}
+            onChange={(event) => {
+              setEmail(event.target.value);
+            }}
           />
           <TextField
             variant="outlined"
@@ -70,7 +78,9 @@ export default function Login() {
             type="password"
             id="password"
             autoComplete="current-password"
-            onChange={(event) => {setPassword(event.target.value)}}
+            onChange={(event) => {
+              setPassword(event.target.value);
+            }}
           />
           <Button
             fullWidth
@@ -94,19 +104,22 @@ export default function Login() {
   );
 
   async function handleLogin() {
-      await api.post("/session", { user_email, user_password }).then((response) => {
-          if (response.data.message) {
-            alert(response.data.message);
-          } else {
-            history.push({
-              pathname: "/panel",
-              state: {
-                user: response.data
-              }
-            })
-          }
-        }, (error) => {
-          alert(error.response.data);
-        });
+    await api.post("/session", { user_email, user_password }).then(
+      (response) => {
+        if (response.data.message) {
+          alert(response.data.message);
+        } else {
+          history.push({
+            pathname: "/panel",
+            state: {
+              user: response.data,
+            },
+          });
+        }
+      },
+      (error) => {
+        alert(error.response.data);
+      }
+    );
   }
 }

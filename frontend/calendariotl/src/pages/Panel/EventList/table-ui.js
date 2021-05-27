@@ -18,9 +18,9 @@ import api from "../../../services/api";
 const columns = [
   { id: "code", label: "Código" },
   { id: "description", label: "Descrição" },
-  { id: "dateStart", label: "Data Inicio" },
-  { id: "hourStart", label: "Hora Término" },
-  { id: "dateEnd", label: "Data Inicio" },
+  { id: "dateStart", label: "Data Início" },
+  { id: "hourStart", label: "Hora Início" },
+  { id: "dateEnd", label: "Data Término" },
   { id: "hourEnd", label: "Hora Término" },
   { id: "eventEdit", label: "Editar" },
   { id: "eventDelete", label: "Deletar" },

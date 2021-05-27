@@ -81,6 +81,23 @@ h3{
   z-index: 100;
 }
 
+@media screen and (max-width: 700px) {
+  .sidebar {
+    width: 100%;
+    height: auto;
+    position: relative;
+  }
+  .sidebar a {float: left;}
+  div.content {margin-left: 0;}
+}
+
+@media screen and (max-width: 400px) {
+  .sidebar a {
+    text-align: center;
+    float: none;
+  }
+}
+
 .botoes-col-esq {
   width: 210px;
   padding: 0.5rem 0 0.5rem 1.5rem;
